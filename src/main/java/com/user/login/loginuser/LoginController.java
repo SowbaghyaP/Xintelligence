@@ -58,10 +58,12 @@ public class LoginController {
 	@PostMapping("/api/login")
 	public ResponseEntity<Object> loginUser(@RequestBody Login login) {
 
-		if (validation.validateLoginUser(login)) {
-
-			return new ResponseEntity<>("Fill the mandatory fields", HttpStatus.BAD_REQUEST);
-		}
+		/*
+		 * if (validation.validateLoginUser(login)) {
+		 * 
+		 * return new ResponseEntity<>("Fill the mandatory fields",
+		 * HttpStatus.BAD_REQUEST); }
+		 */
 
 		Users user = repository.findByUserNameAndPassword(login.getUserName(), login.getPassword());
 
