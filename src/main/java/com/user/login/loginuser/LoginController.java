@@ -20,7 +20,6 @@ import com.user.login.loginuser.userdetails.SignUp;
 import com.user.login.loginuser.userdetails.Users;
 
 @RestController
-
 public class LoginController {
 
 	@Autowired
@@ -32,12 +31,10 @@ public class LoginController {
 	@PostMapping(value = "/api/signUp")
 	public ResponseEntity<Object> signUpUser(@RequestBody SignUp signup) {
 
-		/*
-		 * if (validation.validateUser(signup)) {
-		 * 
-		 * return new ResponseEntity<>("Fill the mandatory fields",
-		 * HttpStatus.BAD_REQUEST); }
-		 */
+		if (validation.validateUser(signup)) {
+
+			return new ResponseEntity<>("Fill the mandatory fields", HttpStatus.BAD_REQUEST);
+		}
 
 		if (repository.existsByUserName(signup.getUsername())) {
 			return ResponseEntity.badRequest().body("Error: Username is already taken!");
@@ -106,23 +103,23 @@ public class LoginController {
 
 		return ResponseEntity.ok("Users uploaded successfully.");
 	}
-	
-	private String getCellValueAsString(Cell cell) {
-	    if (cell == null) {
-	        return null;
-	    }
 
-	    switch (cell.getCellType()) {
-	        case STRING:
-	            return cell.getStringCellValue();
-	        case NUMERIC:
-	            return String.valueOf(cell.getNumericCellValue());
-	        case BOOLEAN:
-	            return String.valueOf(cell.getBooleanCellValue());
-	        case FORMULA:
-	            return cell.getCellFormula();
-	        default:
-	            return "";
-	    }
-}
+	private String getCellValueAsString(Cell cell) {
+		if (cell == null) {
+			return null;
+		}
+
+		switch (cell.getCellType()) {
+		case STRING:
+			return cell.getStringCellValue();
+		case NUMERIC:
+			return String.valueOf(cell.getNumericCellValue());
+		case BOOLEAN:
+			return String.valueOf(cell.getBooleanCellValue());
+		case FORMULA:
+			return cell.getCellFormula();
+		default:
+			return "";
+		}
+	}
 }
