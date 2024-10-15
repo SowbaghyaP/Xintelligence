@@ -1,5 +1,6 @@
 package com.user.login.loginuser;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.user.login.loginuser.userdetails.Login;

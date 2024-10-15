@@ -50,6 +50,8 @@ public class LoginController {
 		user.setPassword(signup.getPassword());
 		user.setPhoneNo(signup.getPhoneNo());
 		user.setState(signup.getState());
+		user.setRole(signup.getRole());
+		user.setStatus(signup.getStatus());
 		repository.save(user);
 
 		return new ResponseEntity<>("User registered", HttpStatus.CREATED);
@@ -58,18 +60,20 @@ public class LoginController {
 	@PostMapping("/api/login")
 	public ResponseEntity<Object> loginUser(@RequestBody Login login) {
 
-		/*
-		 * if (validation.validateLoginUser(login)) {
-		 * 
-		 * return new ResponseEntity<>("Fill the mandatory fields",
-		 * HttpStatus.BAD_REQUEST); }
-		 */
+		if (validation.validateLoginUser(login)) {
+
+			return new ResponseEntity<>("Fill the mandatory fields", HttpStatus.BAD_REQUEST);
+		}
 
 		Users user = repository.findByUserNameAndPassword(login.getUserName(), login.getPassword());
 
 		if (user != null) {
-			return new ResponseEntity<>("User login", HttpStatus.OK);
+			if (user.getRole().equalsIgnoreCase("Admin")) {
+				return new ResponseEntity<>("Welcome to the Admin Dashboard!", HttpStatus.OK);
+			} else if (user.getRole().equalsIgnoreCase("User")) {
+				return ResponseEntity.ok("Welcome to the User Dashboard!");
 
+			}
 		}
 		return new ResponseEntity<>("User not registered", HttpStatus.CONFLICT);
 	}
@@ -89,6 +93,8 @@ public class LoginController {
 				String phoneNo = getCellValueAsString(row.getCell(2));
 				String state = getCellValueAsString(row.getCell(3));
 				String password = getCellValueAsString(row.getCell(4));
+				String role = getCellValueAsString(row.getCell(5));
+				String status = getCellValueAsString(row.getCell(6));
 				// Create and save the user
 				Users user = new Users();
 				user.setUserName(username);
@@ -96,6 +102,8 @@ public class LoginController {
 				user.setPassword(password);
 				user.setPhoneNo(phoneNo);
 				user.setState(state);
+				user.setRole(role);
+				user.setStatus(status);
 				repository.save(user);
 
 			}
