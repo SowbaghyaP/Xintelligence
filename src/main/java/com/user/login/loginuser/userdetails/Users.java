@@ -13,18 +13,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public class Users {
 
-	
-
-	public Users(long id, String userName, String password, String email, String phoneNo, String state) {
-		super();
-		this.id = id;
-		this.userName = userName;
-		this.password = password;
-		this.email = email;
-		this.phoneNo = phoneNo;
-		this.state = state;
-	}
-
 	public Users() {
 		// TODO Auto-generated constructor stub
 	}
@@ -49,6 +37,14 @@ public class Users {
 	@Column(name = "state")
 	private String state;
 
+	@NotBlank
+	@Column(name = "role")
+	private String role;
+
+	@NotBlank
+	@Column(name = "status")
+	private String status;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -63,12 +59,6 @@ public class Users {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	@Override
-	public String toString() {
-		return "User [userName=" + userName + ", password=" + password + ", email=" + email + ", phoneNo=" + phoneNo
-				+ ", state=" + state + "]";
 	}
 
 	public String getEmail() {
@@ -94,5 +84,42 @@ public class Users {
 	public void setState(String state) {
 		this.state = state;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Users(long id, @NotBlank String userName, @NotBlank String password, @NotBlank @Email String email,
+			@NotBlank String phoneNo, @NotBlank String state, @NotBlank String role, @NotBlank String status) {
+		super();
+		this.id = id;
+		this.userName = userName;
+		this.password = password;
+		this.email = email;
+		this.phoneNo = phoneNo;
+		this.state = state;
+		this.role = role;
+		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "Users [id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email
+				+ ", phoneNo=" + phoneNo + ", state=" + state + ", role=" + role + ", status=" + status + "]";
+	}
+	
+	
 
 }

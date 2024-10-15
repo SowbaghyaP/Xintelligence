@@ -21,10 +21,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.user.login.loginuser.repo.LoginRepository;
 import com.user.login.loginuser.userdetails.Login;
 import com.user.login.loginuser.userdetails.SignUp;
+import com.user.login.loginuser.userdetails.Users;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(LoginController.class)
+
 class LoginUserApplicationTests {
 
 	@Mock
@@ -37,43 +39,49 @@ class LoginUserApplicationTests {
 	private MockMvc mockMvc;
 	@Autowired
 	private ObjectMapper objectMapper;
+	@MockBean
+	Validation validation;
+	@MockBean 
+	Users users;
 
 	@Test
 	public void testAddUser() throws JsonProcessingException, Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-	//	URI uri = URI.create("http://localhost:" + 8080 + "/signUp");
-		SignUp signup = new SignUp("zack", "zzz", "dumy5", "CH", "87656757");
+		// URI uri = URI.create("http://localhost:" + 8080 + "/signUp");
+		SignUp signup = new SignUp("zack", "zzz@gmail.com", "dummy5", "CH", "87656757", "user", "active");
+		Mockito.when(validation.validateUser(signup)).thenReturn(true);
+		Mockito.when(loginController.signUpUser(signup))
+				.thenReturn(new ResponseEntity<>("User registered", HttpStatus.CREATED));
 
-		
-		  Mockito.when(loginController.signUpUser(signup)) .thenReturn(new
-		  ResponseEntity<>("User registered", HttpStatus.CREATED));
-		 
-		mockMvc
-				.perform(post("/api/signUp").contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(signup)).characterEncoding("utf-8"))
+		mockMvc.perform(post("/api/signUp").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(signup)).characterEncoding("utf-8"))
 				.andExpect(status().isCreated()).andReturn();
 
 	}
-	
+
 	@Test
 	public void testLoginUser() throws JsonProcessingException, Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-	//	URI uri = URI.create("http://localhost:" + 8080 + "/signUp");
+		// URI uri = URI.create("http://localhost:" + 8080 + "/signUp");
 		Login login = new Login();
-		login.setUserName("Sowbaghya");
-		login.setPassword("dummy");
+		login.setUserName("David5");
+		login.setPassword("abc");
 		
+		  Users mockUser = new Users(); // Create a mock user object
+		  
+		  mockUser.setRole("user");
+		    // Assuming your repository method looks like this
+		    Mockito.when(repository.findByUserNameAndPassword("David", "abc")).thenReturn(mockUser);
 
-		Mockito.when(loginController.loginUser(login))
-				.thenReturn(new ResponseEntity<>("valid user", HttpStatus.OK));
-		 mockMvc
-				.perform(post("/api/login").contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(login)).characterEncoding("utf-8"))
-				.andExpect(status().isOk()).andReturn();
+		 Mockito.when(validation.validateLoginUser(login)).thenReturn(true);
+		Mockito.when(loginController.loginUser(login)).thenReturn(new ResponseEntity<>("valid user", HttpStatus.OK));
+		mockMvc.perform(post("/api/login").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(login)).characterEncoding("utf-8")).andExpect(status().isOk())
+				.andReturn();
 
 	}
 
